@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Animation 4</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .screen { display: none; }
+    .active { display: block; }
+    .error { color: red; }
+    img { max-width: 200px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <!-- Registration Form -->
+  <div id="registration" class="screen active">
+    <h2>Registration Form</h2>
+    <label>Username</label><br>
+    <input type="text" id="regUsername"><br><br>
+    <label>Password</label><br>
+    <input type="password" id="regPassword"><br><br>
+    <label>Upload Photo</label><br>
+    <input type="file" id="regPhoto" accept="image/*"><br><br>
+    <button onclick="register()">REGISTER</button>
+  </div>
+
+  <!-- Login Form -->
+  <div id="login" class="screen">
+    <h2>Login</h2>
+    <label>Username</label><br>
+    <input type="text" id="loginUsername"><br><br>
+    <label>Password</label><br>
+    <input type="password" id="loginPassword"><br><br>
+    <button onclick="login()">LOG IN</button>
+    <p id="error" class="error"></p>
+  </div>
+
+  <!-- Welcome Screen -->
+  <div id="welcome" class="screen">
+    <h2>WELCOME, <span id="displayUsername"></span></h2>
+    <img id="userImage" src="" alt="User Photo">
+  </div>
+
+  <script>
+    let storedUsername = "";
+    let storedPassword = "";
+    let storedPhotoURL = "";
+
+    function register() {
+      const username = document.getElementById('regUsername').value;
+      const password = document.getElementById('regPassword').value;
+      const photo = document.getElementById('regPhoto').files[0];
+
+      if (username && password && photo) {
+        storedUsername = username;
+        storedPassword = password;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          storedPhotoURL = e.target.result;
+          showScreen('login');
+        };
+        reader.readAsDataURL(photo);
+      } else {
+        alert("Please fill in all fields and upload a photo.");
+      }
+    }
+
+    function login() {
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+      const error = document.getElementById('error');
+
+      if (username === storedUsername && password === storedPassword) {
+        document.getElementById('displayUsername').innerText = storedUsername;
+        document.getElementById('userImage').src = storedPhotoURL;
+        showScreen('welcome');
+      } else {
+        error.textContent = "Invalid/incorrect. Try again.";
+      }
+    }
+
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+    }
+  </script>
+
+</body>
+</html>
